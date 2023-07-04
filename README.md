@@ -1,42 +1,41 @@
-# BugBounty/Pentest/HackTheBox Build for Kali Linux VM on M1 (ARM64)
-sudo apt-get update - done
-sudo apt-get upgrade - done
-pip3 install ansible - manually
-echo 'export PATH=$PATH:/home/{{ user.id }}/.local/bin' >> .zshrc - done
+# Bughunting/Pentest/HackTheBox Playbook for Kali Linux VM on M1 (ARM64)
+First of all, this Ansible playbook was inspired by IppSec's  <a href="https://github.com/IppSec/parrot-build">parrot-build</a>.
+It contains the tools and configurations I personally use when Bughunting/Pentesting/HacktheBoxing.
+Please feel free to reach out should you find any issues.
 
-install cookie quick manager ext - done
-install foxyproxy ext - done
-install wappalyzer ext - done
-install ublock - done
+## Installation
+1. Install ansible via pip3
+```
+pip3 install ansible
+```
 
-install burpsuite
+2. Clone this repository
+3. Run the playbook with sudo token
+```
+sudo whoami
+ansible-playbook playbook.yml
+```
 
-install go  done
-echo 'export PATH=$PATH:/usr/local/go/bin' >> .zshrc done
-echo 'export PATH=$PATH:/$(go env GOPATH)/bin   done
-
-go tools:
-subfinder done
-meg done
-httprobe done
-ffuf done 
-gf done
-assetfinder done
-anew done
-https://github.com/tomnomnom
-
-other tools:
-smbmap
-chisel (ARM and x64) done
-impacket
-pspy
-linpeas
-jwtcrack
-dirsearch
-tmux
-ghidra
-
-IDE
-VSCode
-wget 'https://code.visualstudio.com/sha/download?build=stable&os=linux-deb-arm64' -O vscode.deb
-sudo apt-get install ./vscode.deb
+## List of tools
+- anew
+- assetfinder
+- BurpSuite Community
+- chisel (ARM and x64) 
+- cookie quick manager
+- dirsearch
+- ffuf  
+- foxyproxy
+- gf 
+- ghidra
+- go  
+- httprobe 
+- impacket
+- jwtcrack
+- linpeas
+- meg 
+- pspy
+- smbmap
+- subfinder 
+- ublock  
+- VSCode
+- wappalyzer
