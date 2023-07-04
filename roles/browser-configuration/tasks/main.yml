@@ -6,6 +6,3 @@
     owner: root
     group: root
     mode: '0644'
-
-
-# TODO: Burp-suite cert configuration

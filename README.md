@@ -34,6 +34,7 @@ ansible-playbook playbook.yml
 - linpeas
 - meg 
 - pspy
+- seclists
 - smbmap
 - subfinder 
 - ublock  
