@@ -1,0 +1,11 @@
+- name: Update and upgrade apt packages
+  become: true
+  ansible.builtin.apt:
+    upgrade: true
+    update_cache: true
+
+- name: Add /home/user/.local/bin to $PATH
+  ansible.builtin.lineinfile:
+    dest: /home/{{ ansible_user_id }}/.zshrc
+    line: "export PATH=$PATH:/home/{{ ansible_user_id }}/.local/bin"
+    owner: "{{ ansible_user_id }}"

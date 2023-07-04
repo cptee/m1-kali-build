@@ -1,0 +1,6 @@
+---
+- name: Include Go Install ansible.builtin.include_tasks
+  ansible.builtin.include_tasks: "go-install.yml"
+
+- name: Include Go Tools Install ansible.builtin.include_tasks
+  ansible.builtin.include_tasks: "go-tools-install.yml"

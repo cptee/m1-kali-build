@@ -1,0 +1,11 @@
+- name: Copy policy file (Install Addons)
+  become: true
+  ansible.builtin.template:
+    src: firefox-policy.json.j2
+    dest: /usr/share/firefox-esr/distribution/policies.json
+    owner: root
+    group: root
+    mode: '0644'
+
+
+# TODO: Burp-suite cert configuration

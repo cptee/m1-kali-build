@@ -1,0 +1,99 @@
+---
+- name: Download latest burpsuite community
+  ansible.builtin.get_url:
+    url: https://portswigger-cdn.net/burp/releases/download?product=community&version=2023.6.2&type=LinuxArm64
+    dest: /tmp/burpsuite_community_linux_arm64_v2023_6_2.sh
+    mode: "0755"
+    owner: "{{ ansible_user_id }}"
+    group: "{{ ansible_user_id }}"
+
+- name: Copy response.varfile
+  ansible.builtin.template:
+    src: response.varfile.j2
+    dest: /tmp/response.varfile
+    owner: "{{ ansible_user_id }}"
+    group: "{{ ansible_user_id }}"
+    mode: '0644'
+
+- name: Install burpsuite unattended
+  ansible.builtin.command: "/tmp/burpsuite_community_linux_arm64_v2023_6_2.sh -q -varfile /tmp/response.varfile"
+  register: res # <- Registers the command output.
+  changed_when: res.rc != 0 # <-
+
+- name: Download Jython
+  ansible.builtin.get_url:
+    url: https://repo1.maven.org/maven2/org/python/jython-standalone/2.7.3/jython-standalone-2.7.3.jar
+    dest: /home/{{ ansible_user_id }}/.BurpSuite/jython-standalone-2.7.3.jar
+    mode: "0440"
+    owner: "{{ ansible_user_id }}"
+    group: "{{ ansible_user_id }}"
+
+- name: Download JRuby
+  ansible.builtin.get_url:
+    url: https://repo1.maven.org/maven2/org/jruby/jruby-dist/9.4.3.0/jruby-dist-9.4.3.0-bin.tar.gz
+    dest: /tmp/jruby-dist-9.4.3.0-bin.tar.gz
+    mode: "0550"
+    owner: "{{ ansible_user_id }}"
+    group: "{{ ansible_user_id }}"
+
+- name: Extract JRuby.jar and move to ~/.BurpSuite/jruby-9.4.3.0.jar
+  ansible.builtin.command: "{{ item }}"
+  register: res # <- Registers the command output.
+  changed_when: res.rc != 0 # <-
+  loop:
+    - "tar -C /tmp/ -xzf /tmp/jruby-dist-9.4.3.0-bin.tar.gz"
+    - "mv /tmp/jruby-9.4.3.0/lib/jruby.jar /home/{{ ansible_user_id }}/.BurpSuite/jruby-9.4.3.0.jar"
+
+- name: Ensures /home/username/.BurpSuite/bapps/* dir exists
+  ansible.builtin.file:
+    path: "/home/{{ ansible_user_id }}/.BurpSuite/bapps/{{ item }}"
+    state: directory
+    mode: "0770"
+  loop:
+    - f9bbac8c4acf4aefa4d7dc92a991af2f
+
+- name: Download Extensions (Autorize)
+  ansible.builtin.get_url:
+    url: https://portswigger-cdn.net/bappstore/bapps/download/f9bbac8c4acf4aefa4d7dc92a991af2f/23
+    dest: /home/{{ ansible_user_id }}/.BurpSuite/bapps/f9bbac8c4acf4aefa4d7dc92a991af2f/Autorize.py
+    mode: "07550"
+    owner: "{{ ansible_user_id }}"
+    group: "{{ ansible_user_id }}"
+
+
+- name: Save Burp Settings files
+  ansible.builtin.template:
+    src: burp-settings.json.j2
+    dest: /home/{{ ansible_user_id }}/.BurpSuite/burp-settings.json
+    owner: "{{ ansible_user_id }}"
+    group: "{{ ansible_user_id }}"
+    mode: '0644'
+
+- name: Start Burp to Download certificate (Must click Start)
+  ansible.builtin.command: "BurpSuiteCommunity --config-file=/home/{{ ansible_user_id }}/.BurpSuite/burp-settings.json"
+  changed_when: false
+  async: 30
+  poll: 0
+
+- name: Sleep for 30 seconds so that Burp Starts properly
+  ansible.builtin.wait_for:
+    timeout: 30
+  delegate_to: localhost
+
+- name: Download cacert.der
+  ansible.builtin.get_url:
+    url: http://localhost:8080/cert
+    dest: /home/{{ ansible_user_id }}/.BurpSuite/BurpCA.der
+    mode: "0770"
+    owner: "{{ ansible_user_id }}"
+    group: "{{ ansible_user_id }}"
+
+- name: Cleanup files
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: absent
+  loop:
+    - "/tmp/burpsuite_community_linux_arm64_v2023_6_2.sh"
+    - "/tmp/response.varfile"
+    - "/tmp/jruby-dist-9.4.3.0-bin.tar.gz"
+    - "/tmp/jruby-9.4.3.0"

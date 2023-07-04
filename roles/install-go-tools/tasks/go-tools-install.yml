@@ -1,0 +1,13 @@
+---
+- name: Install Go Tools
+  ansible.builtin.command: go install -v github.com/{{ item }}
+  register: res
+  changed_when: res.rc != 0
+  loop:
+    - "projectdiscovery/subfinder/v2/cmd/subfinder@latest"
+    - "tomnomnom/meg@latest"
+    - "tomnomnom/httprobe@latest"
+    - "ffuf/ffuf/v2@latest"
+    - "tomnomnom/gf@latest"
+    - "tomnomnom/assetfinder@latest"
+    - "tomnomnom/anew@latest"

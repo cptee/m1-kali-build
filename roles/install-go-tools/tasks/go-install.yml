@@ -1,0 +1,38 @@
+---
+- name: Download go1.20.5.darwin-arm64.tar.gz
+  ansible.builtin.get_url:
+    url: https://go.dev/dl/go1.20.5.linux-arm64.tar.gz
+    dest: /tmp/go1.20.5.linux-arm64.tar.gz
+    mode: "0440"
+    owner: "{{ ansible_user_id }}"
+    group: "{{ ansible_user_id }}"
+
+- name: Check if previous Go installation exists
+  ansible.builtin.stat:
+    path: /usr/local/go
+  register: go_folder
+
+- name: Remove previous Go Installation if go_folder exists
+  become: true
+  become_user: root
+  ansible.builtin.file:
+    path: /usr/local/go
+    state: absent
+  when: go_folder.stat.exists
+
+- name: Install new Go version
+  become: true
+  become_user: root
+  ansible.builtin.unarchive:
+    src: /tmp/go1.20.5.linux-arm64.tar.gz
+    dest: /usr/local
+    # tar -C /usr/local -xzf /tmp/go1.20.5.linux-arm64.tar.gz
+
+- name: Add Go paths to $PATH
+  ansible.builtin.lineinfile:
+    dest: /home/{{ ansible_user_id }}/.zshrc
+    line: "{{ item }}"
+    owner: "{{ ansible_user_id }}"
+  loop:
+    - "export PATH=$PATH:/usr/local/go/bin"
+    - "export PATH=$PATH:/$(go env GOPATH)/bin"

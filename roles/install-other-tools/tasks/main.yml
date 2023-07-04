@@ -1,0 +1,69 @@
+---
+- name: Download chisel, pspy, linpeas
+  ansible.builtin.get_url:
+    url: "https://github.com/{{ item.url }}"
+    dest: "/home/{{ ansible_user_id }}/Documents/{{ item.savefile }}"
+    mode: "0770"
+    owner: "{{ ansible_user_id }}"
+    group: "{{ ansible_user_id }}"
+  loop:
+    - { url: "jpillora/chisel/releases/latest/download/chisel_1.8.1_linux_amd64.gz", savefile: "chisel/chisel_1.8.1_linux_amd64.gz" }
+    - { url: "jpillora/chisel/releases/latest/download/chisel_1.8.1_linux_arm64.gz", savefile: "chisel/chisel_1.8.1_linux_arm64.gz" }
+    - { url: "DominicBreuker/pspy/releases/latest/download/pspy32", savefile: "pspy/pspy32" }
+    - { url: "DominicBreuker/pspy/releases/latest/download/pspy64", savefile: "pspy/pspy64" }
+    - { url: "carlospolop/PEASS-ng/releases/latest/download/linpeas.sh", savefile: "linpeas/linpeas.sh" }
+
+- name: Untar chisel ARM64
+  become: true
+  become_user: root
+  ansible.builtin.command: "gzip -k -d /home/{{ ansible_user_id }}/Documents/chisel/chisel_1.8.1_linux_arm64.gz"
+  register: res # <- Registers the command output.
+  changed_when: res.rc != 0 # <-
+
+- name: Send chisel ARM64 to $PATH
+  become: true
+  become_user: root
+  ansible.builtin.command: "mv /home/{{ ansible_user_id }}/Documents/chisel/chisel_1.8.1_linux_arm64 /home/{{ ansible_user_id }}/.local/bin/chisel_1.8.1"
+  register: res # <- Registers the command output.
+  changed_when: res.rc != 0 # <-
+
+- name: Chmod /home/username/.local/bin/chisel_1.8.1
+  become: true
+  become_user: root
+  ansible.builtin.file:
+    path: /home/{{ ansible_user_id }}/.local/bin/chisel_1.8.1
+    mode: "0755"
+
+- name: Install Python-venv
+  become: true
+  become_user: root
+  ansible.builtin.apt:
+    name: python3-venv
+    state: present
+
+- name: Install pipx
+  ansible.builtin.command: "pip3 install pipx"
+  register: res # <- Registers the command output.
+  changed_when: res.rc != 0
+
+- name: Install Impacket
+  ansible.builtin.command: "python3 -m pipx install impacket"
+  register: res
+  changed_when: res.rc != 0
+
+- name: Install jwtcrack, dirsearch, seclists
+  ansible.builtin.git:
+    repo: "{{ item.repo_url }}"
+    dest: "/home/{{ ansible_user_id }}/Documents/{{ item.folder }}"
+    version: master
+  loop:
+    - { repo_url: "https://github.com/Sjord/jwtcrack.git", folder: "jwtcrack" }
+    - { repo_url: "https://github.com/maurosoria/dirsearch.git", folder: "dirsearch" }
+    - { repo_url: "https://github.com/danielmiessler/SecLists", folder: "seclists" }
+
+- name: Install Ghidra
+  become: true
+  become_user: root
+  ansible.builtin.apt:
+    name: ghidra
+    state: present

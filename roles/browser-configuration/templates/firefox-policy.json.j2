@@ -1,0 +1,37 @@
+{
+  "policies": {
+    "DisplayBookmarksToolbar": true,
+    "NoDefaultBookmarks": true,
+    "OverrideFirstRunPage": "",
+    "OverridePostUpdatePage": "",
+    "Homepage": {
+      "URL": "file:///usr/share/kali-defaults/web/homepage.html",
+      "Locked": false,
+      "StartPage": "homepage"
+    },
+    "DisableTelemetry": true,
+    "NetworkPrediction": false,
+    "DNSOverHTTPS": {
+      "Enabled": false
+    },
+    "CaptivePortal": false,
+    "FirefoxHome": {
+      "Search": true,
+      "TopSites": true,
+      "Highlights": false,
+      "Pocket": false,
+      "Snippets": false,
+      "Locked": false
+    },
+    "Certificates": {
+      "Install": ["BurpCA.der", "/home/{{ ansible_user_id }}/.BurpSuite/BurpCA.der"]
+    }
+    "Extensions": {
+      "Install": [
+        {% for url in addon_urls %}
+        "{{ url }}"{{ "," if not loop.last }}
+        {% endfor %}
+      ]
+    }
+  }
+}
