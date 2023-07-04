@@ -1,3 +1,4 @@
+# BugBounty/Pentest/HackTheBox Build for Kali Linux VM on M1 (ARM64)
 sudo apt-get update - done
 sudo apt-get upgrade - done
 pip3 install ansible - manually
