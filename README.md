@@ -1,6 +1,6 @@
-# Bughunting/Pentest/HackTheBox Playbook for Kali Linux VM on M1 (ARM64)
+# Pentest/HackTheBox build playbook for Kali Linux VM on M1 (ARM64)
 First of all, this Ansible playbook was inspired by IppSec's  <a href="https://github.com/IppSec/parrot-build">parrot-build</a>.
-It contains the tools and configurations I personally use when Bughunting/Pentesting/HacktheBoxing.
+It contains the tools and configurations I personally use when Pentesting/HacktheBoxing and sometimes bughunting.
 Please feel free to reach out should you find any issues.
 
 ## Installation
