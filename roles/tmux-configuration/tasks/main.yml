@@ -1,0 +1,18 @@
+- name: Install TPM
+  ansible.builtin.git:
+    repo: "https://github.com/tmux-plugins/tpm"
+    dest: "/home/{{ ansible_user_id }}/.tmux/plugins/tpm"
+    version: master
+
+- name: Copy tmux.config
+  ansible.builtin.template:
+    src: tmux.conf.j2
+    dest: "/home/{{ ansible_user_id }}/.config/tmux/tmux.conf"
+    owner: "{{ ansible_user_id }}"
+    group: "{{ ansible_user_id }}"
+    mode: '0644'
+
+- name: Install plugins
+  ansible.builtin.command: "/home/{{ ansible_user_id }}/.tmux/plugins/tpm/bin/install_plugins"
+  register: res # <- Registers the command output.
+  changed_when: res.rc != 0 # <-

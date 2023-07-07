@@ -40,3 +40,6 @@ ansible-playbook playbook.yml
 - ublock  
 - VSCode
 - wappalyzer
+
+## Tmux Configuration
+Based on https://www.youtube.com/watch?v=DzNmUNvnB04

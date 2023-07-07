@@ -1,0 +1,25 @@
+# List of plugins
+set -g @plugin 'tmux-plugins/tpm'
+set -g @plugin 'tmux-plugins/tmux-sensible'
+set -g @plugin 'christoomey/vim-tmux-navigator'
+set -g @plugin 'catppuccin/tmux'
+
+# Catppuccin Settings
+set -g @catppuccin_user "on"
+set -g @catppuccin_powerline_theme_enabled "on"
+set -g @catppuccin_l_left_separator ""
+set -g @catppuccin_l_right_separator ""
+set -g @catppuccin_r_left_separator ""
+set -g @catppuccin_r_right_separator ""
+
+# Global Settings
+set -g mouse "on"
+set -g base-index 1
+set -g pane-base-index 1
+set-window-option -g pane-base-index 1
+set-option -g renumber-windows "on"
+bind '"' split-window -v -c "#{pane_current_path}"
+bind % split-window -h -c "#{pane_current_path}"
+
+# Initialize TMUX plugin manager (keep this line at the very bottom of tmux.conf)
+run '~/.tmux/plugins/tpm/tpm'
